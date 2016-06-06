@@ -1,0 +1,11 @@
+.DS_Store
+
+# Configuration file is private
+config.yml
+
+# Never store any certificates.
+*.pem
+
+# Generated files.
+/data/letsencrypt
+/data/nginx/vhost.d/
