@@ -23,7 +23,9 @@ server {
   ssl_ciphers               'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!3DES:!MD5:!PSK';
   ssl_prefer_server_ciphers on;
   ssl_session_cache         shared:SSL:10m;
-  # ssl_dhparam /etc/ssl/certs/dhparam.pem;
+  <% if File.exist('data/nginx/dhparam/dhparam.pem') %>
+  ssl_dhparam /etc/nginx/dhparam/dhparam.pem;
+  <% end %>
   add_header                Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
 
   location / {

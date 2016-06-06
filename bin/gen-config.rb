@@ -25,6 +25,7 @@ class Generator
     FileUtils.mkdir_p 'data/letsencrypt/etc/letsencrypt'
     FileUtils.mkdir_p 'data/letsencrypt/var/lib/letsencrypt'
     FileUtils.mkdir_p 'data/nginx/vhost.d'
+    FileUtils.mkdir_p 'data/nginx/dhparam'
     Dir.glob("data/nginx/vhost.d/*.conf") { |e| File.delete(e) }
     Dir.glob("data/letsencrypt/cli/*.ini") { |e| File.delete(e) }
   end
@@ -49,9 +50,17 @@ class Generator
       end
     end
   end
+
+  def generate_dhparam
+    unless File.exist?('data/nginx/dhparam/dhparam.pem')
+      puts "Generating Diffie-Hellman group. Please wait..."
+      `openssl dhparam -out data/nginx/dhparam/dhparam.pem 2048`
+    end
+  end
 end
 
 g = Generator.new
 g.create_directory_structure
 g.configure_nginx
 g.configure_letsencrypt
+g.generate_dhparam

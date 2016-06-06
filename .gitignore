@@ -8,4 +8,5 @@ config.yml
 
 # Generated files.
 /data/letsencrypt
-/data/nginx/vhost.d/
+/data/nginx/vhost.d
+/data/nginx/dhparam
