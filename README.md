@@ -16,6 +16,7 @@ email: contact@example.com
 domains:
   sub1.domain.com: http://container
   sub2.domain.com: http://service:1234
+  www.domain.com: file:///data/www/static
 ```
 
 Run `gen-config.sh` in `bin/`.

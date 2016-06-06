@@ -29,6 +29,9 @@ server {
   add_header                Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
 
   location / {
+    <% if proxy_addr.start_with?('file://') %>
+    root <%= proxy_addr.sub(/^file:\/\//, '') %>;
+    <% else %>
     proxy_pass              <%= proxy_addr %>;
     proxy_redirect          off;
     proxy_set_header        Host              $host;
@@ -37,6 +40,7 @@ server {
     proxy_set_header        X-Forwarded-Proto $scheme;
     proxy_set_header        X-Frame-Options   SAMEORIGIN;
     proxy_set_header        X-Forwarded-Ssl   on;
+    <% end %>
   }
 }
 <% end %>
