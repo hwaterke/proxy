@@ -1,6 +1,7 @@
 require 'yaml'
 require 'erb'
 require 'fileutils'
+require 'logger'
 
 # Used to provide isolated bindings to ERB.
 class Namespace
@@ -18,21 +19,26 @@ end
 class Generator
   def initialize
     @config = YAML.load_file('config.yml')
+    @logger = Logger.new(STDOUT)
   end
 
   def create_directory_structure
+    @logger.debug "Generating directory structure"
     FileUtils.mkdir_p 'data/letsencrypt/cli'
     FileUtils.mkdir_p 'data/letsencrypt/etc/letsencrypt'
     FileUtils.mkdir_p 'data/letsencrypt/var/lib/letsencrypt'
     FileUtils.mkdir_p 'data/nginx/vhost.d'
     FileUtils.mkdir_p 'data/nginx/dhparam'
+    @logger.debug "Removing old configurations"
     Dir.glob("data/nginx/vhost.d/*.conf") { |e| File.delete(e) }
     Dir.glob("data/letsencrypt/cli/*.ini") { |e| File.delete(e) }
   end
 
   def configure_nginx
+    @logger.debug "Generating Nginx configurations"
     template = File.read('data/templates/proxy.erb')
     @config['domains'].each do |domain, proxy_addr|
+      @logger.debug "Nginx: #{domain}"
       ns = Namespace.new(domain: domain, proxy_addr: proxy_addr)
       File.open("data/nginx/vhost.d/#{domain}.conf", 'w') do |out|
         out.print ERB.new(template).result(ns.get_binding)
@@ -41,9 +47,10 @@ class Generator
   end
 
   def configure_letsencrypt
+    @logger.debug "Generating Let's Encrypt configurations"
     template = File.read('data/templates/letsencrypt.erb')
-
     @config['domains'].each do |domain, _|
+      @logger.debug "Let's Encrypt: #{domain}"
       ns = Namespace.new(domain: domain, email: @config['email'])
       File.open("data/letsencrypt/cli/#{domain}.ini", 'w') do |out|
         out.print ERB.new(template).result(ns.get_binding)
@@ -53,7 +60,7 @@ class Generator
 
   def generate_dhparam
     unless File.exist?('data/nginx/dhparam/dhparam.pem')
-      puts "Generating Diffie-Hellman group. Please wait..."
+      @logger.debug "Generating Diffie-Hellman group"
       `openssl dhparam -out data/nginx/dhparam/dhparam.pem 2048`
     end
   end
