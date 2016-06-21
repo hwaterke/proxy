@@ -37,9 +37,11 @@ class Generator
   def configure_nginx
     @logger.debug "Generating Nginx configurations"
     template = File.read('data/templates/proxy.erb')
-    @config['domains'].each do |domain, proxy_addr|
+    @config['domains'].each do |domain, settings|
       @logger.debug "Nginx: #{domain}"
-      ns = Namespace.new(domain: domain, proxy_addr: proxy_addr)
+      settings = {'proxy' => settings} if settings.is_a? String
+      raise "No proxy value for #{domain}" if settings['proxy'].nil?
+      ns = Namespace.new(domain: domain, settings: settings)
       File.open("data/nginx/vhost.d/#{domain}.conf", 'w') do |out|
         out.print ERB.new(template).result(ns.get_binding)
       end
