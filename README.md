@@ -14,25 +14,17 @@ The following structure is expected:
 ---
 email: contact@example.com
 domains:
-  sub1.domain.com: http://container
-  sub2.domain.com: http://service:1234
+  sub1.domain.com:
+    /: http://container
+  sub2.domain.com:
+    /: http://service:1234
+    /api: http://api:1234
   sub3.domain.com:
-    proxy: http://service:1234
-  sub4.domain.com:
-    proxy: http://service:1234
+    /: http://service:1234
     auth: http://auth/auth
     auth_error: http://auth/login
-  www.domain.com: file:///data/www/static
-```
-
-Note that
-```yaml
-sub1.domain.com: http://container
-```
-is equivalent to
-```yaml
-sub1.domain.com:
-  proxy: http://container
+  www.domain.com:
+    /: file:///data/www/static
 ```
 
 Run `gen-config.sh` in `bin/`.

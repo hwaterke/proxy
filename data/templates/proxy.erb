@@ -11,13 +11,13 @@ server {
   }
 }
 
-<% if File.exist?("data/letsencrypt/etc/letsencrypt/live/#{domain}/fullchain.pem") %>
+<% if File.exist?("data/letsencrypt/etc/letsencrypt/live/#{domain}/fullchain.pem") -%>
 server {
   listen            443 ssl http2;
   server_name       <%= domain %>;
-  <% unless settings['auth'].nil? %>
+<% unless settings['auth'].nil? -%>
   auth_request /auth;
-  <% end %>
+<% end -%>
 
   ssl                       on;
   ssl_protocols             TLSv1.2;
@@ -26,19 +26,19 @@ server {
   ssl_ciphers               'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!3DES:!MD5:!PSK';
   ssl_prefer_server_ciphers on;
   ssl_session_cache         shared:SSL:10m;
-  <% if File.exist?('data/nginx/dhparam/dhparam.pem') %>
+<% if File.exist?('data/nginx/dhparam/dhparam.pem') -%>
   ssl_dhparam /etc/nginx/dhparam/dhparam.pem;
-  <% end %>
+<% end -%>
   add_header                Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
 
-  <% unless settings['auth_error'].nil? %>
+<% unless settings['auth_error'].nil? -%>
   error_page 401 = @error401;
   location @error401 {
     return 302 <%= settings['auth_error'] %>;
   }
-  <% end %>
+<% end -%>
 
-  <% unless settings['auth'].nil? %>
+<% unless settings['auth'].nil? -%>
   location = /auth {
     internal;
     proxy_pass <%= settings['auth'] %>;
@@ -51,13 +51,15 @@ server {
     proxy_set_header        X-Forwarded-Proto $scheme;
     proxy_set_header        X-Forwarded-Ssl   on;
   }
-  <% end %>
+<% end -%>
 
-  location / {
-    <% if settings['proxy'].start_with?('file://') %>
-    root <%= settings['proxy'].sub(/^file:\/\//, '') %>;
-    <% else %>
-    proxy_pass              <%= settings['proxy'] %>;
+<% settings.each do |location, endpoint| -%>
+<% if location.start_with? '/' -%>
+  location <%= location %> {
+<% if endpoint.start_with?('file://') -%>
+    root <%= endpoint.sub(/^file:\/\//, '') %>;
+<% else -%>
+    proxy_pass              <%= endpoint %>;
     proxy_redirect          off;
     proxy_set_header        Host              $host;
     proxy_set_header        X-Real-IP         $remote_addr;
@@ -65,7 +67,9 @@ server {
     proxy_set_header        X-Forwarded-Proto $scheme;
     proxy_set_header        X-Frame-Options   SAMEORIGIN;
     proxy_set_header        X-Forwarded-Ssl   on;
-    <% end %>
+<% end -%>
   }
+<% end -%>
+<% end -%>
 }
-<% end %>
+<% end -%>
