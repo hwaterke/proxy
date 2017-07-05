@@ -14,10 +14,10 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ../data/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ../data/nginx/vhost.d:/etc/nginx/vhost.d:ro
-      - ../data/nginx/dhparam:/etc/nginx/dhparam:ro
-      - ../data/letsencrypt/etc/letsencrypt:/etc/letsencrypt:ro
+      - ./data/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./data/nginx/vhost.d:/etc/nginx/vhost.d:ro
+      - ./data/nginx/dhparam:/etc/nginx/dhparam:ro
+      - ./data/letsencrypt/etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
       - acme-challenge-data
     volumes_from:
