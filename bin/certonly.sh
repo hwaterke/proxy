@@ -7,7 +7,7 @@ for i in ../data/letsencrypt/cli/*.ini; do
     -v "$(pwd)/../data/letsencrypt/var/lib/letsencrypt:/var/lib/letsencrypt" \
     -v "$(pwd)/../data/letsencrypt/cli/${i##*/}:/letsencrypt.ini" \
     --volumes-from acme-challenge-data \
-    quay.io/letsencrypt/letsencrypt:latest certonly \
+    certbot/certbot certonly \
     --config /letsencrypt.ini \
     --agree-tos
 done
