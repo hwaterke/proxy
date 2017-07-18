@@ -4,4 +4,4 @@ docker run -it --rm --name certbot \
   -v "$(pwd)/../data/letsencrypt/var/lib/letsencrypt:/var/lib/letsencrypt" \
   -v "$(pwd)/../data/letsencrypt/cli.ini:/letsencrypt.ini" \
   --volumes-from acme-challenge-data \
-  quay.io/letsencrypt/letsencrypt:latest renew
+  certbot/certbot renew
