@@ -58,6 +58,7 @@ server {
   location <%= location %> {
 <% if endpoint.start_with?('file://') -%>
     root <%= endpoint.sub(/^file:\/\//, '') %>;
+    try_files $uri /index.html;
 <% else -%>
     proxy_pass              <%= endpoint %>;
     proxy_redirect          off;
