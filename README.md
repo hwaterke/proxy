@@ -80,7 +80,7 @@ Inside it, create a `myfiles` folder and put your files inside.
       ...
 ```
 
-Then edit your `config.yaml` and add the following lines:
+Then edit your `config.yml` and add the following lines:
 ```
 files.domain.com:
   /: file:///var/www/myfiles
