@@ -1,11 +1,6 @@
 version: '2'
+
 services:
-  acme-challenge-data:
-    image: debian
-    container_name: acme-challenge-data
-    volumes:
-      - /var/www/letsencrypt
-    command: /bin/true
 
   nginx:
     image: nginx
@@ -18,7 +13,4 @@ services:
       - ./data/nginx/vhost.d:/etc/nginx/vhost.d:ro
       - ./data/nginx/dhparam:/etc/nginx/dhparam:ro
       - ./data/letsencrypt/etc/letsencrypt:/etc/letsencrypt:ro
-    depends_on:
-      - acme-challenge-data
-    volumes_from:
-      - acme-challenge-data:ro
+      - ./data/letsencrypt_challenges/:/var/www/letsencrypt:ro
