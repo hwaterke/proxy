@@ -25,6 +25,8 @@ domains:
     auth_error: http://auth/login
   www.domain.com:
     /: file:///data/www/static
+  sub4.domain.com:
+    /: redirect:https://domain.com
 ```
 
 Run `gen-config.sh` in `bin/`.
