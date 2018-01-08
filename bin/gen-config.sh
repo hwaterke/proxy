@@ -1,2 +1,3 @@
 #!/usr/bin/env bash
-docker run --rm -it -v "$(pwd)/..:/app" -w /app ruby:alpine ruby ./bin/gen-config.rb
+./build-runner.sh
+docker run --rm -it -v "$(pwd)/..:/app" -w /app runner ruby ./bin/gen-config.rb
